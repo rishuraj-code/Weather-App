@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeatherApp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo"><span>🌤️</span><h2>Weather<span>App</span></h2></div>
+
+      <nav class="sidebar-nav">
+        <a href="#currentWeather" data-target="currentWeather" class="active">⌂ <span>Current Weather</span></a>
+        <a href="#forecastSection" data-target="forecastSection">▣ <span>5-Day Forecast</span></a>
+        <a href="#hourlySection" data-target="hourlySection">◷ <span>Hourly Forecast</span></a>
+        <a href="#mapSection" data-target="mapSection">◈ <span>Map View</span></a>
+        <a href="#favoritesSection" data-target="favoritesSection">♡ <span>Favorites</span></a>
+        <a href="#alertsSection" data-target="alertsSection">♧ <span>Alerts</span></a>
+        <a href="#settingsSection" data-target="settingsSection">⚙ <span>Settings</span></a>
+      </nav>
+
+      <div class="sidebar-tools">
+        <div class="tool-card">
+          <h4>📍 Use My Location</h4>
+          <p>Detect my current location</p>
+          <button id="locationButton">📍 Detect Location</button>
+        </div>
+
+        <div class="tool-card">
+          <p>Temperature Unit</p>
+          <div class="unit-toggle">
+            <button id="celsiusButton" class="selected">°C</button>
+            <button id="fahrenheitButton">°F</button>
+          </div>
+        </div>
+
+        <small class="copyright">© 2026 WeatherApp</small>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search-box">
+          <input id="cityInput" type="text" placeholder="Search city..." autocomplete="off">
+          <button id="searchButton" aria-label="Search">⌕</button>
+        </div>
+        <p id="errorMessage"></p>
+      </header>
+
+      <section class="current-weather" id="currentWeather">
+        <div class="weather-location">
+          <h3>📍 Pune, IN</h3>
+          <p>Loading weather...</p>
+        </div>
+
+        <div class="weather-content">
+          <div class="weather-icon"><img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Weather"></div>
+          <div class="temperature">
+            <h1>--<span>°C</span></h1>
+            <h3>Loading...</h3>
+            <p>Feels like --°C</p>
+          </div>
+          <div class="weather-details">
+            <div><span>💧</span><p>Humidity</p><strong>--%</strong></div>
+            <div><span>💨</span><p>Wind</p><strong>-- km/h</strong></div>
+            <div><span>◷</span><p>Pressure</p><strong>-- hPa</strong></div>
+            <div><span>◉</span><p>Visibility</p><strong>-- km</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="map-section" id="mapSection">
+        <div class="section-heading"><small>LOCATION</small><h2>📍 Location Map</h2><p>Explore the current weather location</p></div>
+        <div class="map-card"><div id="weatherMap"></div></div>
+      </section>
+
+      <div class="two-column">
+        <section class="card-section" id="forecastSection">
+          <div class="section-header"><h2>5-Day Forecast</h2><span>Daily</span></div>
+          <div class="forecast-cards" id="forecastCards"><div class="loading">Loading...</div></div>
+        </section>
+
+        <section class="card-section" id="hourlySection">
+          <div class="section-header"><h2>Hourly Forecast</h2><span>Next 18 Hours</span></div>
+          <div class="hourly-cards" id="hourlyCards"><div class="loading">Loading...</div></div>
+        </section>
+      </div>
+
+      <div class="two-column">
+        <section class="card-section">
+          <div class="section-header"><h2>Recently Searched</h2><button id="clearRecent">Clear</button></div>
+          <div class="recent-cities" id="recentCities"><p class="empty">No recent searches</p></div>
+        </section>
+
+        <section class="card-section" id="favoritesSection">
+          <div class="section-header">
+            <h2>⭐ Favorite Cities</h2>
+            <button id="addFavoriteButton">+ Add Current City</button>
+          </div>
+          <div class="favorite-cities" id="favoriteCities"><p class="empty">No favorite cities yet</p></div>
+        </section>
+      </div>
+
+      <section class="card-section" id="alertsSection">
+        <div class="section-header"><h2>🚨 Weather Alerts</h2></div>
+        <div class="alerts-container" id="weatherAlerts">
+          <div class="no-alert"><b>✓</b><div><strong>No Weather Alerts</strong><p>No severe weather conditions detected.</p></div></div>
+        </div>
+      </section>
+
+      <section class="card-section" id="settingsSection">
+        <div class="section-header"><h2>⚙️ Settings</h2></div>
+        <div class="settings">
+          <div><div><strong>🌡️ Temperature Unit</strong><p>Choose how temperature is displayed.</p></div><select id="temperatureUnit"><option value="C">°C</option><option value="F">°F</option></select></div>
+          <div><div><strong>🚨 Weather Alerts</strong><p>Show alerts for severe conditions.</p></div><label class="switch"><input type="checkbox" id="alertToggle" checked><span></span></label></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="mobile-nav">
+    <button data-target="currentWeather" class="mobile-active">🏠<span>Home</span></button>
+    <button data-target="mapSection">◈<span>Map</span></button>
+    <button data-target="currentWeather">📍<span>Location</span></button>
+    <button data-target="alertsSection">🔔<span>Alerts</span></button>
+    <button data-target="settingsSection">⚙<span>Settings</span></button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
