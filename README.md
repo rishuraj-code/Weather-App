@@ -1,18 +1,14 @@
 # Weather App
 
-[svg](https://github.com/rishuraj-code/weather-app#weather-app)
-
 WELCOME TO THE WEATHER APP WEBSITE.
 
 ## Description
 
-[svg](https://github.com/rishuraj-code/weather-app#description)
-
-This is a simple weather application that shows weather information for different cities using the OpenWeather API.
+This is a web-based weather application that shows weather information for different cities using the OpenWeather API.
 
 ## Features
 
-[svg](https://github.com/rishuraj-code/weather-app#features)
+➤ Simple and user-friendly interface.
 
 ➤ Search weather by city name.
 
@@ -24,42 +20,46 @@ This is a simple weather application that shows weather information for differen
 
 ➤ Celsius and Fahrenheit option.
 
-➤ Favorite cities.
+➤ Favorite cities option.
 
 ➤ Weather map.
 
-➤ Responsive design.
-
 ## Usage
 
-[svg](https://github.com/rishuraj-code/weather-app#usage)
+➤ Open the Weather App in your browser.
 
 ➤ Enter a city name in the search box.
 
-➤ Click the search button.
+➤ Click on the search button.
 
 ➤ Check the current weather and forecast.
 
-➤ Use location option for current weather.
+➤ Use the location option for current weather.
 
 ➤ Use °C or °F to change temperature.
 
+## Weather Logic
+
+➤ User searches for a city.
+
+➤ The app gets weather data from the API.
+
+➤ The weather information is displayed on the screen.
+
+➤ Forecast data is shown for upcoming days.
+
 ## Technology Used
 
-[svg](https://github.com/rishuraj-code/weather-app#technology-used)
+➤ HTML: For the structure.
 
-➤ HTML
+➤ CSS: For styling.
 
-➤ CSS
+➤ JavaScript: For logic and API handling.
 
-➤ JavaScript
+➤ OpenWeather API: For weather data.
 
-➤ OpenWeather API
-
-➤ Leaflet.js
+➤ Leaflet.js: For the map.
 
 ## Author
-
-[svg](https://github.com/rishuraj-code/weather-app#author)
 
 Developed by Rishu Raj.
