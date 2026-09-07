@@ -24,6 +24,10 @@ This is a web-based weather application that shows weather information for diffe
 
 ➤ Weather map.
 
+➤ Recently searched cities.
+
+➤ Weather alerts.
+
 ## Usage
 
 ➤ Open the Weather App in your browser.
