@@ -25,6 +25,7 @@ const weatherDate = document.querySelector(".weather-location p");
 const detailValues = document.querySelectorAll(".weather-details strong");
 
 let currentWeather = null;
+let displayedWeather = null;
 let currentForecast = null;
 let unit = "C";
 let map = null;
@@ -61,13 +62,21 @@ async function loadWeather(city) {
   searchButton.textContent = "⌕";
 }
 
-function displayWeather(data) {
+function displayWeather(data, type = "current") {
   const weather = data.weather[0];
-  const date = new Date((data.dt + data.timezone) * 1000);
 
-  weatherLocation.textContent = `📍 ${data.name}, ${data.sys.country}`;
+  // Forecast/hourly items do not contain city name, country, or timezone.
+  // Use the current city's information for those selected cards.
+  const timezone = data.timezone ?? currentWeather?.timezone ?? currentForecast?.city?.timezone ?? 0;
+  const cityName = data.name ?? currentWeather?.name ?? currentForecast?.city?.name ?? "Selected Forecast";
+  const country = data.sys?.country ?? currentWeather?.sys?.country ?? "";
+  const date = new Date((data.dt + timezone) * 1000);
+
+  displayedWeather = data;
+
+  weatherLocation.textContent = `📍 ${cityName}${country ? `, ${country}` : ""}`;
   weatherDate.textContent = date.toUTCString().slice(0, 22);
-  condition.textContent = weather.description.replace(/\b\w/g, c => c.toUpperCase());
+  condition.textContent = weather.description.replace(/\\b\\w/g, c => c.toUpperCase());
   weatherIcon.innerHTML = `<img src="https://openweathermap.org/img/wn/${weather.icon}@2x.png" alt="${weather.description}">`;
 
   detailValues[0].textContent = `${data.main.humidity}%`;
@@ -76,9 +85,14 @@ function displayWeather(data) {
   detailValues[3].textContent = data.visibility ? `${(data.visibility / 1000).toFixed(1)} km` : "N/A";
 
   updateTemperature();
-  updateFavoriteButton();
-  updateAlerts(data);
-  updateMap(data.coord.lat, data.coord.lon, data.name);
+  updateFeelsLike();
+
+  if (type === "current") {
+    currentWeather = data;
+    updateFavoriteButton();
+    updateAlerts(data);
+    updateMap(data.coord.lat, data.coord.lon, data.name);
+  }
 }
 
 async function loadForecast(lat, lon) {
@@ -136,6 +150,18 @@ function displayForecast() {
       <strong>${Math.round(convertTemp(high))}°${unit}</strong>
       <small>${Math.round(convertTemp(low))}°${unit}</small>`;
 
+    card.onclick = () => {
+      forecastCards.querySelectorAll(".forecast-card").forEach(item => item.classList.remove("active-card"));
+      card.classList.add("active-card");
+
+      displayWeather(selected, "forecast");
+
+      document.getElementById("currentWeather")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    };
+
     forecastCards.appendChild(card);
   });
 }
@@ -145,7 +171,7 @@ function displayHourly() {
   const now = Math.floor(Date.now() / 1000);
   const upcoming = currentForecast.list
     .filter(item => item.dt >= now - 5400)
-    .slice(0, 6);
+    .slice(0, 5);
 
   hourlyCards.innerHTML = "";
 
@@ -157,11 +183,23 @@ function displayHourly() {
       : `${hour % 12 || 12}:00 ${hour >= 12 ? "PM" : "AM"}`;
     const card = document.createElement("div");
 
-    card.className = "hour-card";
+    card.className = `hour-card ${index === 0 ? "active-card" : ""}`;
     card.innerHTML = `
       <p>${time}</p>
       <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png" alt="${item.weather[0].description}">
       <strong>${Math.round(convertTemp(item.main.temp))}°${unit}</strong>`;
+    card.onclick = () => {
+      hourlyCards.querySelectorAll(".hour-card").forEach(item => item.classList.remove("active-card"));
+      card.classList.add("active-card");
+
+      displayWeather(item, "hourly");
+
+      document.getElementById("currentWeather")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    };
+
     hourlyCards.appendChild(card);
   });
 
@@ -171,10 +209,14 @@ function displayHourly() {
 }
 
 function updateTemperature() {
-  if (!currentWeather) return;
-  const temp = Math.round(convertTemp(currentWeather.main.temp));
-  const feels = Math.round(convertTemp(currentWeather.main.feels_like));
+  if (!displayedWeather) return;
+  const temp = Math.round(convertTemp(displayedWeather.main.temp));
   temperature.innerHTML = `${temp}<span>°${unit}</span>`;
+}
+
+function updateFeelsLike() {
+  if (!displayedWeather) return;
+  const feels = Math.round(convertTemp(displayedWeather.main.feels_like ?? displayedWeather.main.temp));
   feelsLike.textContent = `Feels like ${feels}°${unit}`;
 }
 
@@ -188,6 +230,7 @@ function changeUnit(value) {
   document.getElementById("fahrenheitButton").classList.toggle("selected", unit === "F");
   unitSelect.value = unit;
   updateTemperature();
+  updateFeelsLike();
   if (currentForecast) {
     displayForecast();
     displayHourly();
