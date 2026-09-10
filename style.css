@@ -311,20 +311,42 @@ button {
 .section-header button:disabled {
   opacity:.5
 }
-.forecast-cards {
+.forecast-cards,
+.hourly-cards {
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:10px;
 }
-.forecast-card,.hour-card {
+.forecast-card,
+.hour-card {
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
   background:#10283a;
   border:1px solid #ffffff08;
   border-radius:13px;
   text-align:center;
-  padding:13px 7px
+  padding:13px 7px;
+  min-height:166px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.forecast-card:hover,
+.hour-card:hover {
+  transform:translateY(-2px);
 }
 .forecast-card.active-card {
   background:#17466a
+}
+
+.hour-card.active-card {
+  background:#17466a;
+  border-color:#1597e5;
 }
 .forecast-card p,.hour-card p {
   font-size:11px
@@ -335,8 +357,11 @@ button {
   font-size:9px;
   margin-top:3px
 }
-.forecast-card img {
-  width:50px
+.forecast-card img,
+.hour-card img {
+  width:48px;
+  height:48px;
+  object-fit:contain;
 }
 .forecast-card strong,.hour-card strong {
   display:block;
@@ -345,14 +370,7 @@ button {
 .forecast-card small:last-child {
   color:#b9c5ce
 }
-.hourly-cards {
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:8px
-}
-.hour-card img {
-  width:45px
-}
+
 .loading,.empty {
   color:#7f909d;
   font-size:11px;
@@ -549,17 +567,23 @@ select {
     height:240px;
     margin-bottom:28px
   }
-  .forecast-cards {
-    grid-template-columns:repeat(3,1fr)
-  }
-  .forecast-card:nth-child(n+4) {
-    display:none
-  }
+  .forecast-cards,
   .hourly-cards {
-    grid-template-columns:repeat(3,1fr)
+    display:flex;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    gap:10px;
+    padding:2px 2px 8px;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
   }
-  .hour-card:nth-child(n+4) {
-    display:none
+
+  .forecast-card,
+  .hour-card {
+    flex:0 0 105px;
+    width:105px;
+    min-width:105px;
   }
   .mobile-nav {
     position:fixed;
@@ -605,11 +629,5 @@ select {
   }
   .temperature h1 {
     font-size:58px
-  }
-  .forecast-cards {
-    grid-template-columns:repeat(2,1fr)
-  }
-  .hourly-cards {
-    grid-template-columns:repeat(2,1fr)
   }
 }
